@@ -13,6 +13,11 @@ public class PlayerControllerStats : ScriptableObject
 
     public void SetForm(PlayerForm form)
     {
+        if (_form == form)
+        {
+            return;
+        }
+        
         _form = form;
         if (FormChanged != null)
         {

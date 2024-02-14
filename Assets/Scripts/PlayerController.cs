@@ -1,4 +1,5 @@
 using System;
+using Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -11,6 +12,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private PlayerForm[] _forms;
 
+    private CinemachineImpulseSource _impulseSource;
+    
     private int _formIndex = 0;
     
     private Rigidbody2D _rb;
@@ -37,6 +40,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<PolygonCollider2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
         
         _rb.freezeRotation = true;
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
@@ -58,6 +62,8 @@ public class PlayerController : MonoBehaviour
     {
         _spriteRenderer.sprite = form.sprite;
         _spriteRenderer.material = form.material;
+        
+        _impulseSource.GenerateImpulse();
     }
 
     private void Update()
