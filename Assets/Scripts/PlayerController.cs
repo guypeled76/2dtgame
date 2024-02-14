@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private int _formIndex = 0;
     
     private Rigidbody2D _rb;
-    private BoxCollider2D _col;
+    private PolygonCollider2D _col;
     private SpriteRenderer _spriteRenderer;
     private FrameInput _frameInput;
     private Vector2 _frameVelocity;
@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _col = GetComponent<BoxCollider2D>();
+        _col = GetComponent<PolygonCollider2D>();
         _spriteRenderer = GetComponent<SpriteRenderer>();
         
         _rb.freezeRotation = true;
@@ -112,10 +112,10 @@ public class PlayerController : MonoBehaviour
     private void CheckCollisions()
     {
         Physics2D.queriesStartInColliders = false;
-
+        
         // Ground and Ceiling
-        bool groundHit = Physics2D.BoxCast(_col.bounds.center, _col.size, 0, Vector2.down, _settings.GrounderDistance, ~_settings.PlayerLayer);
-        bool ceilingHit = Physics2D.BoxCast(_col.bounds.center, _col.size, 0, Vector2.up, _settings.GrounderDistance, ~_settings.PlayerLayer);
+        bool groundHit = IsGrounded( Vector2.down);
+        bool ceilingHit = IsGrounded(Vector2.up);
 
         // Hit a Ceiling
         if (ceilingHit) _frameVelocity.y = Mathf.Min(0, _frameVelocity.y);
@@ -138,6 +138,25 @@ public class PlayerController : MonoBehaviour
         }
 
         Physics2D.queriesStartInColliders = _cachedQueryStartInColliders;
+    }
+    
+    bool IsGrounded(Vector3 direction)
+    {
+  
+        RaycastHit2D[] rh2ds = new RaycastHit2D[10];
+        _col.Cast(direction, rh2ds, _settings.GrounderDistance, true);
+        foreach (RaycastHit2D rch2d in rh2ds)
+        {
+            if (rch2d && rch2d.collider != null && !rch2d.collider.isTrigger)
+            {
+                GameObject ground = rch2d.collider.gameObject;
+                if (ground != null && !ground.Equals(transform.gameObject))
+                {
+                    return(true);
+                }
+            }
+        }
+        return(false);
     }
 
     #endregion
