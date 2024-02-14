@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     
     private Rigidbody2D _rb;
     private BoxCollider2D _col;
-    private SpriteRenderer _sprite;
+    private SpriteRenderer _spriteRenderer;
     private FrameInput _frameInput;
     private Vector2 _frameVelocity;
     private bool _cachedQueryStartInColliders;
@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody2D>();
         _col = GetComponent<BoxCollider2D>();
-        _sprite = GetComponent<SpriteRenderer>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         
         _rb.freezeRotation = true;
         _cachedQueryStartInColliders = Physics2D.queriesStartInColliders;
@@ -56,7 +56,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnFormChanged(PlayerForm form)
     {
-        _sprite.material = form.material;
+        _spriteRenderer.sprite = form.sprite;
+        _spriteRenderer.material = form.material;
     }
 
     private void Update()
